@@ -56,6 +56,16 @@ class Buku {
       Status: ${this.#Baca ? "Sudah Dibaca" : "Belum Dibaca"}
     `;
   }
+
+  static getData(data){
+    return {
+      judul: data.judul,
+      penulis: data.penulis,
+      halaman: data.halaman,
+      status: data.status,
+      genre: data.genre
+    }
+  }
 }
 
 // Kelas BukuFiksi
@@ -83,6 +93,16 @@ class BukuFiksi extends Buku {
       Genre: ${this.#genre}
     `;
   }
+
+  static getData(data){
+    return {
+      judul: data.judul,
+      penulis: data.penulis,
+      halaman: data.halaman,
+      status: data.status,
+      genre: "fiksi"
+    }
+  }
 }
 
 // Kelas DaftarBuku
@@ -90,7 +110,16 @@ class DaftarBuku {
   #buku; // Mendeklarasikan properti buku sebagai private 
 
   constructor() {
-    this.#buku = [];
+    this.#buku = this.ambilDariLocalStorage();
+    this.tampilkanBuku();
+  }
+
+  simpanKeLocalStorage() {
+    localStorage.setItem('daftarBuku', JSON.stringify(this.#buku));
+  }
+
+  ambilDariLocalStorage() {
+    return JSON.parse(localStorage.getItem("daftarBuku"));
   }
 
   tambahBuku() {
@@ -100,14 +129,33 @@ class DaftarBuku {
     const Baca = confirm("Apakah Anda sudah membaca buku ini?");
     const genre = prompt("Masukkan genre buku (jika fiksi):");
 
-    if (genre && genre.toLowerCase() === "fiksi") {
-      const bukuFiksi = new BukuFiksi(Judul, Penulis, Halaman, Baca, genre);
-      this.#buku.push(bukuFiksi);
-    } else {
-      const buku = new Buku(Judul, Penulis, Halaman, Baca);
-      this.#buku.push(buku);
+    let buku;
+
+    if (genre && genre.toLowerCase() == "fiksi"){
+      const newBuku = new BukuFiksi(Judul, Penulis, Halaman, Baca, genre)
+
+      buku = BukuFiksi.getData({
+        judul: newBuku.Judul,
+        penulis: newBuku.Penulis,
+        halaman: newBuku.Halaman,
+        status: newBuku.Baca,
+        genre: newBuku.genre,
+      })
+    }
+    else {
+      const newBuku = new Buku(Judul, Penulis, Halaman, Baca)
+
+      buku = BukuFiksi.getData({
+        judul: newBuku.Judul,
+        penulis: newBuku.Penulis,
+        halaman: newBuku.Halaman,
+        baca: newBuku.Baca,
+      })
     }
 
+    this.#buku.push(buku);
+
+    localStorage.setItem("daftarBuku", JSON.stringify(this.#buku));
     this.tampilkanBuku();
   }
 
@@ -115,13 +163,40 @@ class DaftarBuku {
     const kontainerDaftarBuku = document.getElementById("daftarBuku");
     kontainerDaftarBuku.innerHTML = "";
 
-    this.#buku.forEach((buku) => {
-      const divBuku = document.createElement("div");
-      divBuku.classList.add("buku");
-      divBuku.innerHTML = buku.getInfo();
-      kontainerDaftarBuku.appendChild(divBuku);
+    this.#buku.forEach((buku, index) => {
+      kontainerDaftarBuku.innerHTML += `
+      <div class="buku">
+        <span>Judul: ${buku.judul}, </span>
+        <span>Penulis: ${buku.penulis}, </span>
+        <span>Halaman: ${buku.halaman}, </span>
+        <span>Baca: ${buku.status}, </span>
+        <span>Genre: ${buku.genre}</span>
+        
+        <button class="hapus-btn">Hapus</button>
+      </div>
+      `
+
     });
+
+    const hapusBuku = document.querySelectorAll(".hapus-btn")
+
+    hapusBuku.forEach((hapusBtn, index) => {
+      hapusBtn.addEventListener("click", () => {
+        this.hapusBuku(index)
+      })
+    })
   }
+  
+  hapusBuku(index) {
+    console.log("hai")
+    this.#buku.splice(index, 1);
+    this.tampilkanBuku();
+    this.simpanKeLocalStorage();
+  }
+}
+
+if (!localStorage.getItem("daftarBuku")){
+  localStorage.setItem('daftarBuku', JSON.stringify([]))
 }
 
 // Inisialisasi DaftarBuku

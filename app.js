@@ -1,14 +1,18 @@
+const out = (...params) => console.log(...params)
+
 class Buku {
   #Judul
   #Penulis
   #Halaman
   #Baca
+  #genre
 
-  constructor(Judul, Penulis, Halaman, Baca) {
+  constructor(Judul, Penulis, Halaman, Baca, genre) {
     this.#Judul = Judul;
     this.#Penulis = Penulis;
     this.#Halaman = Halaman;
     this.#Baca = Baca;
+    this.#genre = genre;
   }
 
   // Getter dan Setter untuk properti Judul
@@ -45,6 +49,10 @@ class Buku {
 
   set Baca(newBaca) {
     this.#Baca = newBaca;
+  }
+
+  get genre() {
+    return this.#genre;
   }
 
   // Method
@@ -132,26 +140,27 @@ class DaftarBuku {
     let buku;
 
     if (genre && genre.toLowerCase() == "fiksi"){
-      const newBuku = new BukuFiksi(Judul, Penulis, Halaman, Baca, genre)
+      const newBuku = new BukuFiksi(Judul, Penulis, Halaman, Baca)
 
       buku = BukuFiksi.getData({
         judul: newBuku.Judul,
         penulis: newBuku.Penulis,
         halaman: newBuku.Halaman,
-        status: newBuku.Baca,
-        genre: newBuku.genre,
+        status: newBuku.Baca ? "Sudah Dibaca" : "Belum Dibaca",
       })
     }
     else {
-      const newBuku = new Buku(Judul, Penulis, Halaman, Baca)
-
-      buku = BukuFiksi.getData({
+      const newBuku = new Buku(Judul, Penulis, Halaman, Baca, genre)
+      
+      buku = Buku.getData({
         judul: newBuku.Judul,
         penulis: newBuku.Penulis,
         halaman: newBuku.Halaman,
-        baca: newBuku.Baca,
+        status: newBuku.Baca ? "Sudah Dibaca" : "Belum Dibaca",
+        genre: newBuku.genre,
       })
     }
+
 
     this.#buku.push(buku);
 
@@ -188,7 +197,6 @@ class DaftarBuku {
   }
   
   hapusBuku(index) {
-    console.log("hai")
     this.#buku.splice(index, 1);
     this.tampilkanBuku();
     this.simpanKeLocalStorage();

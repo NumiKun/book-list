@@ -94,7 +94,7 @@ class BukuFiksi extends Buku {
     this.#genre = newGenre;
   }
 
-  // Override metode getInfo dari kelas induk
+  // Override metode getInfo dari parent kelas
   getInfo() {
     return `
       ${super.getInfo()} 

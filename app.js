@@ -15,7 +15,6 @@ class Buku {
     this.#genre = genre;
   }
 
-  // Getter dan Setter untuk properti Judul
   get Judul() {
     return this.#Judul;
   }
@@ -24,7 +23,6 @@ class Buku {
     this.#Judul = newJudul;
   }
 
-  // Getter dan Setter untuk properti Penulis
   get Penulis() {
     return this.#Penulis;
   }
@@ -33,7 +31,6 @@ class Buku {
     this.#Penulis = newPenulis;
   }
 
-  // Getter dan Setter untuk properti Halaman
   get Halaman() {
     return this.#Halaman;
   }
@@ -42,7 +39,6 @@ class Buku {
     this.#Halaman = newHalaman;
   }
 
-  // Getter dan Setter untuk properti Baca
   get Baca() {
     return this.#Baca;
   }
@@ -55,7 +51,6 @@ class Buku {
     return this.#genre;
   }
 
-  // Method
   getInfo() {
     return `
       Judul: ${this.#Judul}
@@ -85,7 +80,6 @@ class BukuFiksi extends Buku {
     this.#genre = genre;
   }
 
-  // Getter dan Setter untuk properti genre
   get genre() {
     return this.#genre;
   }
@@ -94,7 +88,6 @@ class BukuFiksi extends Buku {
     this.#genre = newGenre;
   }
 
-  // Override metode getInfo dari parent kelas
   getInfo() {
     return `
       ${super.getInfo()} 
@@ -113,9 +106,8 @@ class BukuFiksi extends Buku {
   }
 }
 
-// Kelas DaftarBuku
 class DaftarBuku {
-  #buku; // Mendeklarasikan properti buku sebagai private 
+  #buku; 
 
   constructor() {
     this.#buku = this.ambilDariLocalStorage();
@@ -141,7 +133,6 @@ class DaftarBuku {
 
     if (genre && genre.toLowerCase() == "fiksi"){
       const newBuku = new BukuFiksi(Judul, Penulis, Halaman, Baca)
-
       buku = BukuFiksi.getData({
         judul: newBuku.Judul,
         penulis: newBuku.Penulis,
@@ -161,9 +152,7 @@ class DaftarBuku {
       })
     }
 
-
     this.#buku.push(buku);
-
     localStorage.setItem("daftarBuku", JSON.stringify(this.#buku));
     this.tampilkanBuku();
   }
@@ -184,11 +173,9 @@ class DaftarBuku {
         <button class="hapus-btn">Hapus</button>
       </div>
       `
-
     });
 
     const hapusBuku = document.querySelectorAll(".hapus-btn")
-
     hapusBuku.forEach((hapusBtn, index) => {
       hapusBtn.addEventListener("click", () => {
         this.hapusBuku(index)
